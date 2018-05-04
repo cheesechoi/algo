@@ -7,70 +7,65 @@ f = open('case.txt', 'r')
 
 case = int(f.readline())
 
-def parseCube(strDefCube):
+def parseCube(arrDefCube):
 	retarr = []
-	idx = 0
 
-	print strDefCube[idx]
+	currData = arrDefCube.pop(0)
+	if currData != 'x':
+		return [currData]
 
-	if strDefCube[idx] != 'x':
-		return [strDefCube[idx]]
-
-	idx += 1
 	for part in range(0, 4):
-		if strDefCube[idx] != 'x':
-			retarr.append(strDefCube[idx])
-			idx += 1
+		if arrDefCube[0] != 'x':
+			currData = arrDefCube.pop(0)
+			retarr.append(currData)
 		else:
-			nextnode = parseCube(strDefCube[idx:])
+			nextnode = parseCube(arrDefCube)
 			retarr.append(nextnode)
-			#print len(nextnode)
-			idx += len(nextnode)
-		
-		
 
 	return retarr
 
 for i in range(0, case):
-	print '---'
-	line = f.readline().strip()
-
-	print "line : %s"%line
+	line = list(f.readline().strip())
+	print "line : %s"%str(line)
 	arrCubes.append( parseCube( line ) )
-	print "parse result : %s"%arrCubes[i]
+	#print "parse result : %s"%arrCubes[i]
 	
 f.close()
 
 result = 0
 
+def setter(arrSolved):
+	ret = []
+	for i in arrSolved:
 
+		if len(i) == 1:
+			ret.append(i)
+		else:
+			ret.append('x')
+			ret += setter(i)
+	
+	return ret
 
-# if 모든 애기들이 선택되었는가: 성공! return
-# for 남은 번호쌍들 :
-#	if 번호쌍의 애가 이미 선택된애가 아니라면:
-#		애기들을 줄세우고
-#		solver()
-#		애기들 나오고
-
-# 아규먼트 : 전체 애기들 숫자, 선택된 애들, 남은 애들 번호쌍
-def solver(n, arrSet, arrFair):
+def solver(partsCube):
 
 	#print "n : %d // arrSet : %s // arrFair : %s"%(n, arrSet, arrFair)
-	global result
-	if len(arrSet) == n:
-		result+=1
-		print 'solution : %s'%arrSet
-		return
+	#print partsCube
+	if len(partsCube) < 4:
+		return partsCube
 
-	for idx, fair in enumerate(arrFair):
-		if (fair[0] not in arrSet) and (fair[1] not in arrSet):
-			arrSet.append(fair[0])
-			arrSet.append(fair[1])
-			solver(n, arrSet, arrFair[idx+1:])
-			arrSet.pop()
-			arrSet.pop()
+	solver(partsCube[0])
+	solver(partsCube[1])
+	solver(partsCube[2])
+	solver(partsCube[3])
 
-	return
+	#print 'swap 0 : %s, 2 : %s'%(partsCube[0], partsCube[2])
+	#print 'swap 1 : %s, 3 : %s'%(partsCube[1], partsCube[3])
+	partsCube[0], partsCube[2] = partsCube[2], partsCube[0]
+	#print 'afterchange 1 : '+str(partsCube)
+
+	partsCube[1], partsCube[3] = partsCube[3], partsCube[1]
+	#print 'afterchange 2 : '+str(partsCube)
+	return partsCube
 
 def quadtree():
 	global result
@@ -78,14 +73,13 @@ def quadtree():
 	for nStage in range(0, case):
 		result = 0
 		print 'solve %d'%nStage
-
 		print 'arrCubes : '+str(arrCubes[nStage])
-
-		#solver(nFriends[nStage], [], arrFairs[nStage])
-		print result
+		result = solver(arrCubes[nStage])
+		print 'result :: ' + ''.join(setter(result))
 	return
 
 
 if __name__ == "__main__":
+	print '---'
 	print "hi solver"
 	quadtree()

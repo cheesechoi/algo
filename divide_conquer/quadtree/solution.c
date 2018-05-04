@@ -1,28 +1,19 @@
 #include <iostream>
 
-int n;
-bool areFriends[10][10];
-int countPairings(bool taken[10])
+string reverse(string::iterator& it)
 {
-	int firstFree = -1;
-	for(int i=0; i<n; ++i){
-		if(!taken[i]) {
-			firstFree = i;
-			break;
-		}
-	}
+	char* head = *it;
+	++it;
 
-	if (firstFree == -1) return 1;
-	int ret = 0;
+	if (head=='b' || head=='w')
+		return string(1, head);
 
-	for (int pairWith = firstFree+1; pairWith < n; ++pairWith){
-		if (!taken[pairWith] && areFriends[firstFree][pairWith]) {
-			taken[firstFree] = taken[pairWith] = true;
-			ret += counPairings(taken);
-			taken[firstFree] = taken[pairWith] = false;
-		}
-	}
-	return ret;
+	string upperLeft = reverse(it++);
+	string upperRight = reverse(it++);
+	string lowerLeft = reverse(it++);
+	string lowerRight = reverse(it++);
+
+	return string("x") + lowerLeft + lowerRight + upperLeft + upperRight;
 }
 
 int main()
