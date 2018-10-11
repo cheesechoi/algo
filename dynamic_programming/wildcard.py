@@ -138,5 +138,57 @@ for case in range(0, nCases):
 
 
 
+'''
+def nop(): return
+def Wildcard(pattern, sample):
+	print 'pattern : %s, sample : %s'%(pattern, sample)
+
+	pidx = sidx = 0
+	while ( (pidx < len(pattern)) and (sidx < len(sample)) ) \
+			and ((pattern[pidx] == '?') or (pattern[pidx] == sample[sidx])):
+
+		pidx += 1
+		sidx += 1
+
+
+
+
+	if (pidx >= len(pattern)) or (sidx >= len(sample)):
+		return (pidx >= len(pattern)) and (sidx >= len(sample))
+
+	print '%s vs %s'%(pattern[pidx:], sample[sidx:])
+
+
+	return True
+'''
+
+def solver():
+	global example
+	#example = [i.strip() for i in example.strip().split('\n')]
+	example = example[::-1]
+
+	case = int(example.pop())
+	#print 'case : %d'%case
+	
+	for nStage in range(1, case+1):
+		#print '---'
+		result = 0
+		_pattern = example.pop()
+		_nValue = int(example.pop())
+
+		for _ in range(0, _nValue):
+			_sample = example.pop()
+
+			if wildcard(_pattern, _sample):
+				result += 1
+	
+		#print 'result : %d'%result
+	return
+
+
+if __name__ == "__main__":
+	#print "hi solver"
+	solver()
+
 
 
